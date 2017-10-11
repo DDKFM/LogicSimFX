@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -19,6 +20,9 @@ public class LogicSimFXController implements Initializable{
 
     @FXML
     private Pane simulatorPane;
+
+    @FXML
+    private VBox sideBar;
 
     private double orgTranslateX;
     private double orgTranslateY;
