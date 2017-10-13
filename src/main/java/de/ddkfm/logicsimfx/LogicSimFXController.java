@@ -1,6 +1,8 @@
 package de.ddkfm.logicsimfx;
 
-import de.ddkfm.logicsimfx.views.Gate;
+import de.ddkfm.logicsimfx.models.LogicValue;
+import de.ddkfm.logicsimfx.views.CustomComponent;
+import de.ddkfm.logicsimfx.views.NotGate;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -33,15 +35,19 @@ public class LogicSimFXController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         double width = 1280;
         double height = 720;
-        for(int i = 0; i < width ; i += 10) {
-            for(int j = 0 ; j < height ; j += 10) {
+        for(int i = 0; i < width ; i += Constants.STRUCTURE_SIZE) {
+            for(int j = 0 ; j < height ; j += Constants.STRUCTURE_SIZE) {
                 Rectangle rect = new Rectangle(1, 1, Color.GRAY);
                 rect.setLayoutX(i);
                 rect.setLayoutY(j);
                 simulatorPane.getChildren().add(rect);
             }
         }
-        Gate rect0 = new Gate(50, 150);
+        CustomComponent rect0 = new NotGate();
+        LogicValue lv = new LogicValue(1, "Gate");
+        lv.addFunction("output", "input");
+        rect0.setLogic(lv);
+
         rect0.setOnMousePressed(e -> {
             orgSceneX = e.getSceneX();
             orgSceneY = e.getSceneY();
@@ -53,8 +59,8 @@ public class LogicSimFXController implements Initializable{
         rect0.setOnMouseDragged(e -> {
             double newTranslateX = orgTranslateX + e.getSceneX() - orgSceneX;
             double newTranslateY = orgTranslateY + e.getSceneY() - orgSceneY;
-            rect0.setTranslateX((int) (newTranslateX / 10) * 10);
-            rect0.setTranslateY((int) (newTranslateY / 10) * 10);
+            rect0.setTranslateX((int) (newTranslateX / Constants.STRUCTURE_SIZE) * Constants.STRUCTURE_SIZE);
+            rect0.setTranslateY((int) (newTranslateY / Constants.STRUCTURE_SIZE) * Constants.STRUCTURE_SIZE);
             rect0.setCursor(Cursor.HAND);
 
         });

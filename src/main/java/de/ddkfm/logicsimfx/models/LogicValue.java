@@ -16,6 +16,8 @@ public class LogicValue {
 	private List<BooleanProperty> values = new ArrayList<BooleanProperty>();
 	private Map<String, Connection> connections = new HashMap<String, Connection>();
 	protected Logger logger;
+
+	protected Map<String, String> functions = new HashMap<String, String>();
 	/**
 	 * Constructor of the class
 	 * @param countValues the maximum number of boolean values for the LogicValue
@@ -39,6 +41,12 @@ public class LogicValue {
 	 * */
 	public void addConnection(Connection c){
 		this.connections.put(c.getName(), c);
+	}
+	public void addFunction(String output, String function) {
+		this.functions.put(output, function);
+	}
+	public Map<String, String> getFunctions() {
+		return this.functions;
 	}
 
 	/**
@@ -80,6 +88,13 @@ public class LogicValue {
 			if(conn.getType() == Connection.CONNECTION_OUT)
 				list.add(conn);
 		return list;
+	}
+
+	/**
+	 * return the count of the most connections (count of inputs OR count of outputs)
+	 */
+	public int getMaxConnectionsPerSide() {
+		return Math.max(this.getInputConnection().size(), this.getOutputConnection().size());
 	}
 
 	/**

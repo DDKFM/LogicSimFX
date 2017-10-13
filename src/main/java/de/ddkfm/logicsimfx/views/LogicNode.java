@@ -1,9 +1,11 @@
 package de.ddkfm.logicsimfx.views;
 
+import de.ddkfm.logicsimfx.models.Connection;
 import de.ddkfm.logicsimfx.models.LogicValue;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,7 +16,7 @@ import java.util.List;
 /**
  * the class which represents the logic from LogicValue
  * */
-public abstract class LogicNode extends Parent{
+public abstract class LogicNode extends Pane{
 	protected LogicValue logic = null;
 	protected List<Point> points = new ArrayList<Point>();
 	protected List<BooleanProperty> values = new ArrayList<BooleanProperty>();
