@@ -51,5 +51,14 @@
     </orderEntry>
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.9.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.9.1" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: de.mschaedlich:logicrecognizer:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/logicrecognizer-1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

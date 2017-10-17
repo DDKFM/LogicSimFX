@@ -1,164 +1,81 @@
 package de.ddkfm.logicsimfx.models;
 
+import de.mschaedlich.logic.recognizer.logic.Logic;
+import de.mschaedlich.logic.recognizer.logic.LogicParser;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * the main class the the microprocessorsimulation which is the superclass of all parts of the simulator
- * @author mschaedlich
- * */
 public class LogicValue {
-	private String name;
-	private List<BooleanProperty> values = new ArrayList<BooleanProperty>();
-	private Map<String, Connection> connections = new HashMap<String, Connection>();
-	protected Logger logger;
+    private Map<String, BooleanProperty> inputs = new HashMap<String, BooleanProperty>();
+    private Map<String, BooleanProperty> outputs = new HashMap<String, BooleanProperty>();
+    private Map<String, String> functions = new HashMap<String, String>();
+    private BooleanProperty changedProperty = new SimpleBooleanProperty(false);
 
-	protected Map<String, String> functions = new HashMap<String, String>();
-	/**
-	 * Constructor of the class
-	 * @param countValues the maximum number of boolean values for the LogicValue
-	 * @param name the name of the LogicValue
-	 * */
-	public LogicValue(int countValues, String name){
-		this.setName(name);
-		logger = LogManager.getLogger("LogicValue(" + getName() + ")");
-		for(int i = 0 ; i < countValues ; i++){
-			this.values.add(new SimpleBooleanProperty(false));
-			BooleanProperty currentProperty = this.values.get(i);
-			currentProperty.addListener((obs,oldValue,newValue)->{
-				this.sendValueToOutput(values.indexOf(currentProperty), newValue);
-			});
-		}
-	}
+    public void call(String input, boolean value) {
+        Map<String, Boolean> inputMap = new HashMap<>();
+        for (String key : this.inputs.keySet()) {
+            inputMap.put(key, this.inputs.get(key).getValue());
+        }
+        for(String output : this.outputs.keySet()) {
+            String function = this.functions.get(output);
+            LogicParser parser = new LogicParser(function);
+            Logic logic = parser.parse();
+            boolean result = logic.getResult(inputMap);
+            this.outputs.get(output).setValue(result);
+        }
 
-	/**
-	 * add a given Connection to the LogicValue which is then accessible by name
-	 * @param c Connection which is added to the LogicValue
-	 * */
-	public void addConnection(Connection c){
-		this.connections.put(c.getName(), c);
-	}
-	public void addFunction(String output, String function) {
-		this.functions.put(output, function);
-	}
-	public Map<String, String> getFunctions() {
-		return this.functions;
-	}
+    }
+    public Map<String, BooleanProperty> getInputs() {
+        return inputs;
+    }
 
-	/**
-	 * return the Connection specified by the name as String
-	 * @param name name of the connection(name of the related LogicValue)
-	 * @return the Connection
-	 * */
-	public Connection getConnection(String name){
-		return this.connections.get(name);
-	}
+    public void setInputs(Map<String, BooleanProperty> inputs) {
+        for (Map.Entry<String, BooleanProperty> entry : inputs.entrySet()) {
+            this.setInput(entry.getKey(), entry.getValue());
+        }
+    }
+    public void setInput(String key, BooleanProperty value) {
+        this.inputs.put(key, value);
+        BooleanProperty property = this.inputs.get(key);
+        property.addListener(((observable, oldValue, newValue) -> {
+            this.call(key, newValue);
+            this.changedProperty.setValue(!this.changedProperty.getValue());
+        }));
+    }
 
-	/**
-	 * return all connections that are added to the LogicValue as a Collection of Connections
-	 * @return Collection of Connections
-	 * */
-	public Collection<Connection> getConnections(){
-		return connections.values();
-	}
+    public boolean getChangedProperty() {
+        return changedProperty.get();
+    }
 
-	/**
-	 * return all connections which are incoming connections(type = CONNECTION_IN)
-	 * @return all incoming connections
-	 * */
-	public Collection<Connection> getInputConnection(){
-		List<Connection> list = new ArrayList<Connection>();
-		for(Connection conn: getConnections())
-			if(conn.getType() == Connection.CONNECTION_IN)
-				list.add(conn);
-		return list;
-	}
+    public BooleanProperty changedPropertyProperty() {
+        return changedProperty;
+    }
 
-	/**
-	 * return all connections which are outgoint connections(type = CONNECTION_OUT)
-	 * @return all outgoing connections
-	 * */
-	public Collection<Connection> getOutputConnection(){
-		List<Connection> list = new ArrayList<Connection>();
-		for(Connection conn: getConnections())
-			if(conn.getType() == Connection.CONNECTION_OUT)
-				list.add(conn);
-		return list;
-	}
+    public void setChangedProperty(boolean changedProperty) {
+        this.changedProperty.set(changedProperty);
+    }
 
-	/**
-	 * return the count of the most connections (count of inputs OR count of outputs)
-	 */
-	public int getMaxConnectionsPerSide() {
-		return Math.max(this.getInputConnection().size(), this.getOutputConnection().size());
-	}
+    public Map<String, BooleanProperty> getOutputs() {
+        return outputs;
+    }
 
-	/**
-	 * return the valueProperty specified by an index(to add Listeners to this BooleanProperty)
-	 * @param i index of the BooleanProperty( should by less than the valuesCount)
-	 * @return BooleanProperty
-	 * */
-	public BooleanProperty getValueProperty(int i){
-		return this.values.get(i);
-	}
-	/**
-	 * return the BooleanProperty as a simple boolean object
-	 * @param i index of the associated BooleanProperty
-	 * @return simple boolean object
-	 * */
-	public boolean getValue(int i){
-		return getValueProperty(i).get();
-	}
+    public void setOutputs(Map<String, BooleanProperty> outputs) {
+        this.outputs = outputs;
+    }
 
-	/**
-	 * set the BooleanProperty to the given boolean value
-	 * @param i index of the associated BooleanProperty
-	 * @param value boolean to which the BooleanProperty can be set
-	 * */
-	public void setValue(int i, boolean value){
-		this.getValueProperty(i).set(value);
-	}
+    public Map<String, String> getFunctions() {
+        return functions;
+    }
 
-	/**
-	 * return the name from the LogicVale
-	 * @return name as String
-	 * */
-	public String getName(){return this.name;}
-
-	/**
-	 * return the Size of the intern BooleanProperts array or the Count of the values
-	 * */
-	public int getValueCount(){return this.values.size();}
-
-	/**
-	 * set the name of the LogicValue
-	 * */
-	public void setName(String name){this.name = name;}
-
-	/**
-	 * change will trigger the LogicValue that a incoming connection changed its value
-	 * @param sender the logicValue which fired the change method
-	 * @param index which index should be changed
-	 * @param value to which value should the index be set
-	 * */
-	public void change(LogicValue sender, int index, boolean value){}
-
-	/**
-	 * same function like change but in this the case can be every object( normally a Button)
-	 * @param object which fired the change method
-	 * @param index which index should be changed
-	 * @param value to which value should the index be set
-	 * */
-	public void changeByExtern(Object sender, int index, boolean value){}
-
-	/**
-	 * protected method which should write the specified internal value to all (or a part of) outputs
-	 * @param index index that should be write to the output
-	 * @param value value that should be wirte to the output
-	 * */
-	protected void sendValueToOutput(int index, boolean value){}
+    public void setFunctions(Map<String, String> functions) {
+        this.functions = functions;
+    }
+    public void addFunction(String key, String function) {
+        this.functions.put(key, function);
+    }
 }

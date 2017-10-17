@@ -1,7 +1,6 @@
 package de.ddkfm.logicsimfx.views;
 
 import de.ddkfm.logicsimfx.Constants;
-import de.ddkfm.logicsimfx.models.LogicValue;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;

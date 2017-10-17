@@ -9,6 +9,7 @@ import javafx.scene.shape.Rectangle;
 public class CustomComponent extends LogicNode{
     protected int maxInputConnections;
     protected int maxOutputConnections;
+    protected Rectangle rect;
 
     private Rectangle nobble = new Rectangle(4, 4, Color.BLACK);
 
@@ -19,7 +20,7 @@ public class CustomComponent extends LogicNode{
         this.setHeight(height);
     }
     protected void setRectangle(double width, double height) {
-        Rectangle rect = new Rectangle(width - 2 * Constants.STRUCTURE_SIZE, height - 2 * Constants.STRUCTURE_SIZE, Color.WHITE);
+        rect = new Rectangle(width - 2 * Constants.STRUCTURE_SIZE, height - 2 * Constants.STRUCTURE_SIZE, Color.WHITE);
         rect.setLayoutX(Constants.STRUCTURE_SIZE);
         rect.setLayoutY(Constants.STRUCTURE_SIZE);
         rect.setStroke(Color.BLACK);
@@ -66,7 +67,6 @@ public class CustomComponent extends LogicNode{
         this.addOutputConnections(this.getWidth());
 
     }
-    @Override
     public void setLogic(LogicValue logic) {
         super.setLogic(logic);
     }

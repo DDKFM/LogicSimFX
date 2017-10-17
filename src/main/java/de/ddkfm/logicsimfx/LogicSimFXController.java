@@ -44,10 +44,14 @@ public class LogicSimFXController implements Initializable{
             }
         }
         CustomComponent rect0 = new NotGate();
-        LogicValue lv = new LogicValue(1, "Gate");
-        lv.addFunction("output", "input");
+        LogicValue lv = new LogicValue();
+        lv.addFunction("output", "!input");
         rect0.setLogic(lv);
 
+
+        CustomComponent rect1 = new NotGate();
+        LogicValue lv1 = new LogicValue();
+        lv.addFunction("output", "!input");
         rect0.setOnMousePressed(e -> {
             orgSceneX = e.getSceneX();
             orgSceneY = e.getSceneY();

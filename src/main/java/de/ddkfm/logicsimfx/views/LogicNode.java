@@ -1,10 +1,8 @@
 package de.ddkfm.logicsimfx.views;
 
-import de.ddkfm.logicsimfx.models.Connection;
 import de.ddkfm.logicsimfx.models.LogicValue;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,11 +26,17 @@ public abstract class LogicNode extends Pane{
 		return this.logic;
 	}
 
+	public void call() {}
+
 	/**
 	 * assign the logic to the Graphical Node
 	 * */
 	public void setLogic(LogicValue logic) {
 		this.logic = logic;
+		this.logic.changedPropertyProperty().addListener(((observable, oldValue, newValue) -> {
+			this.call();
+		}));
+		/*
 		logger = LogManager.getLogger(logic.getName() + "(FX)");
 		for(int i = 0 ; i < logic.getValueCount() ; i++){
 				values.add(new SimpleBooleanProperty(false));
@@ -42,6 +46,7 @@ public abstract class LogicNode extends Pane{
 					this.change(values.indexOf(currentProperty), newValue);
 				});
 		}
+		*/
 	}
 	/**
 	 * adding a graphical point to which the Node is displayed
